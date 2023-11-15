@@ -12,15 +12,16 @@ use Illuminate\Support\Facades\Gate;
 class EventController extends Controller
 {
     use CanLoadRelationShips;
-    /**
-     * Display a listing of the resource.
-     */
+
     private array $relations = ['user', 'attendees', 'attendees.user'];
 
     public  function __construct()
     {
         $this->middleware('auth:sanctum')->except(['index', 'show']);
     }
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         $query = $this->loadRelation(Event::query());
