@@ -18,6 +18,7 @@ class EventController extends Controller
     public  function __construct()
     {
         $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->authorizeResource(Event::class, 'event');
     }
     /**
      * Display a listing of the resource.
@@ -51,7 +52,6 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-
         return new EventResource($this->loadRelation($event));
     }
 
@@ -60,9 +60,10 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        if (Gate::denies('update-event', [$event])) {
-            abort(403, 'you are not autheries');
-        }
+        // for a genral auth service but not a secure and good (**policies looks cool)
+        // if (Gate::denies('update-event', [$event])) {
+        //     abort(403, 'you are not autheries');
+        // }
         $event->update([
             ...$request->validate([
                 'name' => 'sometimes|string|max:255',
