@@ -27,16 +27,17 @@ class sendsNotifaction extends Command
      */
     public function handle()
     {
-        $events = Event::with('attendees.user')
-            ->whereBetween('start_time', [now(), now()->addDay()])
-            ->get();
-        $eventCount = $events->count();
-        $eventLbl = Str::plural('event', $eventCount);
-        $this->info("Found {$eventCount} {$eventLbl}");
-        $events->each(
-            fn ($event) => $event->attendees->each(
-                fn ($attendee) => $this->info("Notifying the user {$attendee->user->id}")
-            )
-        );
+        $this->info("hhhh");
+        // $events = Event::with('attendees.user')
+        //     ->whereBetween('start_time', [now(), now()->addDay()])
+        //     ->get();
+        // $eventCount = $events->count();
+        // $eventLbl = Str::plural('event', $eventCount);
+        // $this->info("Found {$eventCount} {$eventLbl}");
+        // $events->each(
+        //     fn ($event) => $event->attendees->each(
+        //         fn ($attendee) => $this->info("Notifying the user {$attendee->user->id}")
+        //     )
+        // );
     }
 }
