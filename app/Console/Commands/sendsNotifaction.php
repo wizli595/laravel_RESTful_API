@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Event;
+use App\Notifications\EventReminderNotification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
@@ -27,17 +28,19 @@ class sendsNotifaction extends Command
      */
     public function handle()
     {
-        $this->info("hhhh");
-        // $events = Event::with('attendees.user')
-        //     ->whereBetween('start_time', [now(), now()->addDay()])
-        //     ->get();
-        // $eventCount = $events->count();
-        // $eventLbl = Str::plural('event', $eventCount);
-        // $this->info("Found {$eventCount} {$eventLbl}");
-        // $events->each(
-        //     fn ($event) => $event->attendees->each(
-        //         fn ($attendee) => $this->info("Notifying the user {$attendee->user->id}")
-        //     )
-        // );
+        $events = Event::with('attendees.user')
+            ->whereBetween('start_time', [now(), now()->addDay()])
+            ->get();
+        $eventCount = $events->count();
+        $eventLbl = Str::plural('event', $eventCount);
+        $this->info("Found {$eventCount} {$eventLbl}");
+        $events->each(
+            fn ($event) => $event->attendees->each(
+                fn ($attendee) => $attendee->user->notify(
+                    new EventReminderNotification($event)
+                )
+            )
+        );
+        $this->info('Reminder notifications sent successfully!');
     }
 }
